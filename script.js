@@ -1,7 +1,7 @@
 const dataBox = document.querySelector('.data');
 const inputForm = document.forms.inputForm;
 const inputData = inputForm.inputData;
-
+let id = document.querySelectorAll('li').length + 1;
 
 inputForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -24,10 +24,12 @@ function createTask(name) {
 
     let newTask = document.createElement('li');
     newTask.dataset['done'] = false;
-    newTask.innerHTML = `<input type="checkbox" name="toggle" class="toggle">
-                        <span>${name}</span>
-                        <button class='delete'>Delete</button>`;
+    newTask.dataset['id'] = id;
+    newTask.innerHTML = `<input type="checkbox" id="toggle-${id}" name="toggle-${id}" class="toggle">
+                        <label for="toggle-${id}">${name}</label>
+                        <button class='delete'></button>`;
     dataBox.prepend(newTask);
+    id++;
 }
 
 
@@ -40,5 +42,5 @@ function changeTaskOption(target) {
 
     let toDoEl = target.dataset.done;
     toDoEl == 'false' ? target.dataset.done = 'true': target.dataset.done = 'false';
-    target.classList.toggle('active');
+    target.classList.toggle('completed');
 }
