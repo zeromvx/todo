@@ -1,72 +1,83 @@
-const dataBox = document.querySelector('.data');
+const dataBox = document.querySelector(".data");
 const inputForm = document.forms.inputForm;
 const inputData = inputForm.inputData;
-let id = document.querySelectorAll('li').length + 1;
+const errorMessage = document.querySelector(".error-message");
+const deleteErrorMessage = document.querySelector(".delete-error-message");
 
+inputForm.addEventListener("submit", (e) => {
+	e.preventDefault();
+	//checking input for text
+	if (inputData.value === "") {
+		errorMessage.classList.add("error-message__active");
+		return;
+	}
 
-
-inputForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    createTask(inputData.value);
-    saveTasks();
+	createTask(inputData.value);
+	inputData.value = "";
+	saveTasks();
 });
 
+dataBox.addEventListener("click", (e) => {
+	let elem = e.target;
 
-dataBox.addEventListener('click', (e) => {
+	if (elem.tagName === "BUTTON" && elem.classList.contains("delete")) {
+		deleteTask(elem.parentNode);
+		saveTasks();
+	} else if (elem.tagName === "INPUT") {
+		changeTaskOption(elem.parentNode.parentNode);
+		saveTasks();
+	}
+});
 
-    let elem = e.target;
-    if (elem.tagName === "BUTTON" && elem.classList.contains('delete')) {
-        deleteTask(elem.parentNode);
-        saveTasks();
-    } else if (elem.tagName === "INPUT" && elem.classList.contains('toggle')) {
-        changeTaskOption(elem.parentNode);
-        saveTasks();
-    }
- });
-
+deleteErrorMessage.addEventListener("click", (e) => {
+	e.target.parentNode.remove();
+});
 
 function renderTasks() {
-    const data = localStorage.getItem("todo");
-    if (data) {
-        dataBox.innerHTML = data;
-    }
-}
+	const data = localStorage.getItem("todo");
 
+	if (data) {
+		dataBox.innerHTML = data;
+	}
+}
 
 function saveTasks() {
-    let notCompletedTasks = document.querySelectorAll('li[data-done="false"]');
-    let newDataBox = '';
-    let newId = 1;
-    notCompletedTasks.forEach((item) => {
-        item.f
-        newDataBox = newDataBox + item.outerHTML + '\n';
-    });
-    localStorage.setItem("todo", newDataBox);
-}
+	const notCompletedTasks = document.querySelectorAll(
+		'li[data-done="false"]'
+	);
+	let newDataBox = "";
 
+	notCompletedTasks.forEach((item) => {
+		newDataBox = newDataBox + item.outerHTML + "\n";
+	});
+	localStorage.setItem("todo", newDataBox);
+}
 
 function createTask(name) {
+	let newTask = document.createElement("li");
 
-    let newTask = document.createElement('li');
-    newTask.dataset['done'] = false;
-    newTask.innerHTML = `<input type="checkbox" id="toggle-${id}" name="toggle-${id}" class="toggle">
-                        <label for="toggle-${id}">${name}</label>
+	newTask.dataset["done"] = false;
+	newTask.innerHTML = `<label>
+                            <input type="checkbox" class="toggle">
+                            <span>${name}</span>
+                        </label>
                         <button class='delete'></button>`;
-    dataBox.prepend(newTask);
-    id++;
-}
 
+	dataBox.prepend(newTask);
+}
 
 function deleteTask(target) {
-    target.remove();
+	target.remove();
 }
 
-
 function changeTaskOption(target) {
+	let toDoEl = target.dataset.done;
 
-    let toDoEl = target.dataset.done;
-    toDoEl == 'false' ? target.dataset.done = 'true': target.dataset.done = 'false';
-    target.classList.toggle('completed');
+	toDoEl == "false"
+		? (target.dataset.done = "true")
+		: (target.dataset.done = "false");
+
+	target.classList.toggle("completed");
 }
 
 renderTasks();
