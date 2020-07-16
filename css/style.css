@@ -207,7 +207,7 @@ ul {
 .toggle:checked + span::before {
 	border-color: #63bd6f;
 	color: #63bd6f;
-	background-image: url("icon.svg");
+	background-image: url("../img/icon.svg");
 }
 
 .container .data-wrap .delete {
